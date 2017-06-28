@@ -1,6 +1,7 @@
-sqlalchemy=0.8.4
-flask=0.9
-pytz=2017.2
-psycopg2=2.4.5
-httplib2=0.10.3
-requests=2.2.1
+sqlalchemy
+Flask
+pytz
+psycopg2
+httplib2
+requests
+oauth2client
