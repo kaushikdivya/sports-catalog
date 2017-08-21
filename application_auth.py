@@ -91,25 +91,34 @@ def check_sub_category_name_id(sub_category, sub_category_id):
 
 
 # check category and category items
-def check_category_sub_category(category, category_id, sub_category, sub_category_id):
+def check_category_sub_category(category, category_id, sub_category,
+                                sub_category_id):
     catg, all_categories = check_category_name_id(category, category_id)
     catg_item = check_sub_category_name_id(sub_category, sub_category_id)
-    if catg is not None and all_categories is not None and catg_item is not None:
+    if catg is not None and \
+            all_categories is not None and \
+            catg_item is not None:
         category_item = session.query(Category, Category_items).filter(
-            Category.id == Category_items.category_id).filter(
-            Category_items.id == sub_category_id).filter(
-            Category_items.expiry_date == None).one()
+            Category.id == Category_items.category_id
+        ).filter(
+            Category_items.id == sub_category_id
+        ).filter(
+            Category_items.expiry_date == None
+        ).one()
         return catg, category_item, all_categories
     else:
         return None, None, None
-
 
 
 @app.route('/login')
 def login():
     '''login page to authenticate user using google and facebook login'''
     # generate 32 bit state token
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    state = ''.join(
+        random.choice(
+            string.ascii_uppercase + string.digits
+        ) for x in xrange(32)
+    )
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
@@ -245,8 +254,12 @@ def fbconnect():
     access_token = request.data
     print "access token recieved %s" % access_token
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_id = json.loads(
+        open('fb_client_secrets.json', 'r').read()
+    )['web']['app_id']
+    app_secret = json.loads(
+        open('fb_client_secrets.json', 'r').read()
+    )['web']['app_secret']
     url = '''https://graph.facebook.com/oauth/access_token?grant_type=
             fb_exchange_token&client_id=%s&client_secret=%s&
             fb_exchange_token=%s''' % (
@@ -379,7 +392,8 @@ def category_list(category, category_id):
                 return redirect(url_for('catelog_home'))
         else:
             for category_item in category_items:
-                if category_item.Category.name != category or category_item.Category.id != category_id:
+                if category_item.Category.name != category or \
+                        category_item.Category.id != category_id:
                     print category
                     return redirect(url_for('catelog_home'))
                 else:
@@ -397,13 +411,18 @@ def category_list(category, category_id):
         return redirect(url_for('catelog_home'))
 
 
-@app.route('/catalog/<category>/<int:category_id>/<sub_category>/<int:sub_category_id>/')
+@app.route(
+    """/catalog/<category>/<int:category_id>/"""
+    """<sub_category>/<int:sub_category_id>/"""
+)
 def sub_category(category, category_id, sub_category, sub_category_id):
     '''Display category items'''
     catg, category_item, all_categories = check_category_sub_category(
                                                 category, category_id,
                                                 sub_category, sub_category_id)
-    if category_item is not None and catg is not None and all_categories is not None:
+    if category_item is not None and \
+            catg is not None and \
+            all_categories is not None:
         if 'username' not in login_session:
             return render_template('item_description.html',
                                    category_item=category_item)
@@ -420,7 +439,10 @@ def add_item():
     return render_template('add_item.html', categories=categories)
 
 
-@app.route('/catalog/<sub_category>/<int:sub_category_id>/edit/', methods=['GET', 'POST'])
+@app.route(
+    '/catalog/<sub_category>/<int:sub_category_id>/edit/',
+    methods=['GET', 'POST']
+)
 def edit_item(sub_category, sub_category_id):
     '''Edit category items'''
     category_item = check_sub_category_name_id(sub_category, sub_category_id)
@@ -500,7 +522,10 @@ def categories_JSON():
     return jsonify(category=[i.serialize for i in categories])
 
 
-@app.route('/catalog/<category>/<int:category_id>/<sub_category>/<int:sub_category_id>/JSON')
+@app.route(
+    """/catalog/<category>/<int:category_id>/"""
+    """<sub_category>/<int:sub_category_id>/JSON"""
+)
 def sub_category_JSON(category, category_id, sub_category, sub_category_id):
     '''Category item JSON response'''
     category_items = session.query(Category, Category_items).filter(
@@ -513,7 +538,6 @@ def sub_category_JSON(category, category_id, sub_category, sub_category_id):
     else:
         data = json.dumps({"message": "No item found"})
     return data
-    
 
 
 # Disconnect based on provider
