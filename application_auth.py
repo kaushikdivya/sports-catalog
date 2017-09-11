@@ -126,13 +126,13 @@ def login():
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate State Token
+
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     code = request.data
-    print "**********************************************************"
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
@@ -182,7 +182,10 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials
+    #credentials = credentials.to_json()
+    print credentials
+    print credentials.access_token
+    login_session['token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
     # Get user info
@@ -215,21 +218,23 @@ def gconnect():
                  -webkit-border-radius: 150px; -moz-border-radius: 150px;">'''
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
+
     return output
 
 
 @app.route('/gdisconnect/')
 def gdisconnect():
     # Only disconnect a connected user.
-    credentials = login_session.get('credentials')
-    if credentials is None:
+    token = login_session.get('token')
+    if "token" is None:
         response = make_response(json.dumps(
             'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Execute HTTP GET request to revoke current token.
-    access_token = credentials.access_token
+
+    access_token = token
     url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
            % access_token)
     print url
@@ -260,28 +265,15 @@ def fbconnect():
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read()
     )['web']['app_secret']
-    url = '''https://graph.facebook.com/oauth/access_token?grant_type=
-            fb_exchange_token&client_id=%s&client_secret=%s&
-            fb_exchange_token=%s''' % (
-            app_id, app_secret, access_token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    print result
 
-    # Use token to get user info from API
-    userinfo_url = "https://graph.facebook.com/v2.4/me"
-    # strip expire tag from access token
-    # token = result.split("&")[0]
-    token = json.loads(result)['access_token']
-
-    url = '''https://graph.facebook.com/v2.8/me?access_token=%s&
-             fields=name,id,email''' % token
+    url = '''https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email''' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     print "url sent for API access:%s" % url
     print "API JSON result: %s" % result
 
     data = json.loads(result)
+    print "json result = {}".format(data)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
     login_session['email'] = data['email']
@@ -290,14 +282,14 @@ def fbconnect():
     # The token must be storedin the login_session in order to properly logout,
     # let's strip out the Information
     # before the equals sign in our token
-    login_session['access_token'] = token
-
+    login_session['access_token'] = access_token
+    print "-------------"
     # Get user picture
-    url = '''https://graph.facebook.com/v2.4/me/picture?access_token=%s&
-             redirect=0&height=200&width=200''' % token
+    url = '''https://graph.facebook.com/v2.4/me/picture?access_token=%s&redirect=0&height=100&width=100''' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
+    print data
     # print 'Data for picture=', data
     login_session['picture'] = data['data']['url']
 
@@ -314,10 +306,10 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += '''"style = "width: 300px; height: 300px;border-radius: 150px;
-                  -webkit-border-radius: 150px;-moz-border-radius: 150px;">'''
+    output += '''"style="width:300px;height:300px;border-radius:150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'''
 
     flash("Now logged in as %s" % login_session['username'])
+    print output
     return output
 
 
@@ -362,7 +354,8 @@ def catelog_home():
         else:
             return render_template('home_auth.html',
                                    all_categories=all_categories,
-                                   latest_subcatagories=latest_subcatagories)
+                                   latest_subcatagories=latest_subcatagories,
+                                   login_session=login_session)
 
 
 @app.route('/catalog/<category>/<int:category_id>/items/')
@@ -387,7 +380,8 @@ def category_list(category, category_id):
                     return render_template('category_items_auth.html',
                                            category=category,
                                            all_categories=all_categories,
-                                           category_items=category_items)
+                                           category_items=category_items,
+                                           login_session=login_session)
             else:
                 return redirect(url_for('catelog_home'))
         else:
@@ -406,7 +400,8 @@ def category_list(category, category_id):
                         return render_template('category_items_auth.html',
                                                category=category,
                                                all_categories=all_categories,
-                                               category_items=category_items)
+                                               category_items=category_items,
+                                               login_session=login_session)
     else:
         return redirect(url_for('catelog_home'))
 
@@ -428,7 +423,8 @@ def sub_category(category, category_id, sub_category, sub_category_id):
                                    category_item=category_item)
         else:
             return render_template('item_description_auth.html',
-                                   category_item=category_item)
+                                   category_item=category_item,
+                                   login_session=login_session)
     else:
         return redirect(url_for('catelog_home'))
 
@@ -436,7 +432,9 @@ def sub_category(category, category_id, sub_category, sub_category_id):
 @app.route('/catalog/add_item/')
 def add_item():
     categories = session.query(Category).all()
-    return render_template('add_item.html', categories=categories)
+    return render_template('add_item.html',
+                            categories=categories,
+                            login_session=login_session)
 
 
 @app.route(
@@ -473,7 +471,8 @@ def edit_item(sub_category, sub_category_id):
                                     category=category,
                                     category_id=category_id,
                                     sub_category=sub_category,
-                                    sub_category_id=sub_category_id))
+                                    sub_category_id=sub_category_id,
+                                    login_session=login_session))
         else:
             categories = session.query(Category).all()
             category_item = session.query(Category, Category_items).filter(
@@ -481,7 +480,8 @@ def edit_item(sub_category, sub_category_id):
                             Category_items.id == sub_category_id).one()
             return render_template('edit_item.html',
                                    category_item=category_item,
-                                   categories=categories)
+                                   categories=categories,
+                                   login_session=login_session)
     else:
         return redirect(url_for('catelog_home'))
 
@@ -548,7 +548,7 @@ def disconnect():
         if login_session['provider'] == 'google':
             gdisconnect()
             del login_session['gplus_id']
-            del login_session['credentials']
+            del login_session['token']
         if login_session['provider'] == 'facebook':
             fbdisconnect()
             del login_session['facebook_id']

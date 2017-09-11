@@ -1,5 +1,3 @@
-
-CREATE database Catalog;
 CREATE TABLE category (id SERIAL PRIMARY KEY, name VARCHAR(25) NOT NULL, created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE);
 CREATE TABLE category_items (id SERIAL PRIMARY KEY, category_id INTEGER REFERENCES category(id), name VARCHAR(25) NOT NULL, description text NOT NULL, created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE);
 CREATE TABLE user_info (id SERIAL PRIMARY KEY, email VARCHAR(250) NOT NULL, name VARCHAR(250) NOT NULL, picture VARCHAR(250), created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE);

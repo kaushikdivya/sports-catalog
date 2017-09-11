@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import psycopg2
 import sys
 
@@ -5,9 +7,19 @@ import sys
 con = None
 
 try:
-    con = psycopg2.connect("host='localhost' dbname='Catalog' user='vagrant' password='vagrant'")
+    con = psycopg2.connect(
+        "host='localhost' dbname='Catalog' user='vagrant' password='vagrant'"
+    )
     cur = con.cursor()
-    cur.execute("CREATE TABLE category (id SERIAL PRIMARY KEY, name VARCHAR(25) NOT NULL, created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE)")
+    cur.execute(
+        """CREATE TABLE category ("""
+            """id SERIAL PRIMARY KEY, """
+            """name VARCHAR(25) NOT NULL, """
+            """created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), """
+            """modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), """
+            """expiry_date TIMESTAMP WITH TIME ZONE"""
+        """)"""
+    )
     cur.execute("CREATE TABLE category_items (id SERIAL PRIMARY KEY, category_id INTEGER REFERENCES category(id), name VARCHAR(25) NOT NULL, description text NOT NULL, created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE)")
     cur.execute("CREATE TABLE user_info (id SERIAL PRIMARY KEY, email VARCHAR(250) NOT NULL, name VARCHAR(250) NOT NULL, picture VARCHAR(250), created_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), modified_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT clock_timestamp(), expiry_date TIMESTAMP WITH TIME ZONE)")
     cur.execute("INSERT INTO category (name) VALUES ('Soccer'),('Basketball'),('Baseball'),('Frisbee'),('Snowboarding'),('Rock Climbing'),('Foosball'),('Skating'),('Hockey')")

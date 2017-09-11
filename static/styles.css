@@ -7,7 +7,7 @@ a{
     color: darkorange;
 }
 
-.navbar-default .navbar-link {
+.navbar-default {
     color: floralwhite;
 }
 
@@ -26,12 +26,9 @@ a{
 .sub-text {
     color: gray;
 }
-.login {
-    margin-top: 25px;
-    margin-left: 850px;
-}
 
-a.edit_delete {
+
+.edit_delete {
     color: #333;
 }
 
@@ -42,4 +39,31 @@ a.edit_delete {
 .flashes {
     color: black;
     background-color: green;
+}
+
+.navbar-header {
+    float: right;
+    margin: 0;
+}
+.profile-photo {
+    border-radius: 50%;
+    float: right;
+
+}
+
+.login {
+    margin-top: 20;
+    
+}
+
+.logout {
+    margin-top: 10;
+    
+}
+.navbar-link  {
+    color: blue;
+}
+.profile-name {
+
+    
 }

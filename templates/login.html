@@ -30,6 +30,7 @@
                 if (authResult['code']) {
                     // Hide the signin button now that user is autherized
                     $('#signInButton').css('display', 'none');
+                    console.log("!!!!!!!!!!!!!");
                     // Send one-time-use code to the server, if the server responds,
                     // write a 'login successfull' message to the web page and
                     // redirect back to the main restaurant page
@@ -41,6 +42,7 @@
                         data: authResult['code'],
                         success: function(result) {
                             // Handle or verify the server response if necessary.
+                            console.log("???");
                             if (result) {
                                 $('#result').html('Login Successful!</br>' + result +'</br>Redirecting...')
                                 setTimeout(function() {
@@ -52,14 +54,14 @@
                                 $('#result').html('Failed to make a server-side call. Check your configuration and console.')
                             }
                         }
-                    }); 
+                    });
                 }
             }
         </script>
         <!-- END GOOGLE PLUS SIGN IN -->
 
         <!-- FACEBOOK SIGN IN -->
-        
+
         <script>
             window.fbAsyncInit = function() {
                 FB.init({
@@ -68,7 +70,7 @@
                 xfbml      : true, // parse social plugins on this page.
                 version    : 'v2.8' // use version 2.2
                 });
-                FB.AppEvents.logPageView();   
+                FB.AppEvents.logPageView();
             };
 
             // Load the SDK asynchronously
@@ -110,8 +112,8 @@
             }
         </script>
 
-        <button>      
-            <fb:login-button 
+        <button>
+            <fb:login-button
             scope="public_profile,email"
             onlogin="checkLoginState();">
             <a href='javascript:sendTokenToServer()'>Login with Facebook</a>

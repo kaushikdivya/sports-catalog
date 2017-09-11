@@ -9,11 +9,14 @@
     </head>
     <body>
         <nav class="navbar navbar-default header">
-            <div class="container" >
-                <div class="navbar-header ">
-                    <h1 class="navbar-text"><a href='/'>Catalog App</a></h1>
-                    <h3 class="nav navbar-nav navbar-right login"><a class="navbar-link" href="/disconnect">Logout</a></h3>
+            <div class="container">
+                <h1 class="navbar-text"><a href='/'>Catalog App</a></h1>
+                <img class="profile-photo" src={{ login_session["picture"] }}>
+                <div class="navbar-header">
+                    <h3 class="profile-name">{{ login_session['username'] }}</h3>
+                    <h4 class="logout"><a class="navbar-link" href="/disconnect">Logout</a></h4>
                 </div>
+
             </div>
         </nav>
         {% block content %}
