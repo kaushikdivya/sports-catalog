@@ -334,10 +334,12 @@ def catelog_home():
         title = request.form['title']
         description = request.form['description']
         category_id = request.form['category_id']
+        user_id = login_session['user_id']
         item = Category_items()
         item.name = title
         item.description = description
         item.category_id = category_id
+        item.user_id = user_id
         session.add(item)
         session.commit()
         flash('Item added successfully')
@@ -370,7 +372,7 @@ def category_list(category, category_id):
             Category_items.expiry_date == None)
         if category_items.count() == 0:
             catg = [cat for cat in all_categories if category == cat.name]
-            if catg != [] and catg[0].id == category_id:
+            if catg[0].id == category_id:
                 if 'username' not in login_session:
                     return render_template('category_items.html',
                                            category=category,
@@ -418,13 +420,19 @@ def sub_category(category, category_id, sub_category, sub_category_id):
     if category_item is not None and \
             catg is not None and \
             all_categories is not None:
-        if 'username' not in login_session:
+        if 'username' in login_session:
+            if category_item.Category_items.user_id == login_session['user_id']:
+                return render_template('item_description_auth.html',
+                                       category_item=category_item,
+                                       login_session=login_session)
+            else:
+                return render_template('item_description_valid_user_auth.html',
+                                       category_item=category_item,
+                                       login_session=login_session)
+        else:
             return render_template('item_description.html',
                                    category_item=category_item)
-        else:
-            return render_template('item_description_auth.html',
-                                   category_item=category_item,
-                                   login_session=login_session)
+            
     else:
         return redirect(url_for('catelog_home'))
 

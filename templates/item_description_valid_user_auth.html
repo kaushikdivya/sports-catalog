@@ -1,0 +1,20 @@
+{% extends 'main_auth.html'%}
+
+{% block content %}
+
+<div class='container'>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ category_item.Category_items.name }}</h3>
+                </div>
+                <div class="panel-body">
+                    {{ category_item.Category_items.description }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
