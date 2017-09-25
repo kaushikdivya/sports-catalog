@@ -4,7 +4,7 @@
 
 <div class="container">
     <h3>Add Item</h3>
-    <form action="/" method="POST">
+    <form method="POST">
         <div class="form-group">
             <label for="title-name">Title:</label>
             <input class="form-control" id="title-name" type="text" name="title" placeholder="Item name" required><br>
@@ -24,7 +24,6 @@
         <button type="submit" class="btn btn-success">Submit</button>
         <button type="button" class="btn btn-deafult" onclick="history.go(-1);">Cancel</button>
     </form>
-
 </div>
 
 {% endblock %}
