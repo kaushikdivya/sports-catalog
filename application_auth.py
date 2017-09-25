@@ -491,7 +491,8 @@ def add_item():
 def edit_item(sub_category, sub_category_id):
     '''Edit category items'''
     category_item = check_sub_category_name_id(sub_category, sub_category_id)
-    if category_item is not None:
+    if category_item is not None and \
+            category_item.user_id == login_session['user_id']:
         if request.method == 'POST':
             title = request.form['title']
             description = request.form['description']
@@ -536,7 +537,8 @@ def edit_item(sub_category, sub_category_id):
 def delete_item(sub_category, sub_category_id):
     '''Delete category items'''
     category_item = check_sub_category_name_id(sub_category, sub_category_id)
-    if category_item is not None:
+    if category_item is not None and \
+            category_item.user_id == login_session['user_id']:
         category_item.expiry_date = datetime.datetime.now(pytz.utc)
         session.add(category_item)
         session.commit()
