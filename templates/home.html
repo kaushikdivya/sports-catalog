@@ -24,7 +24,8 @@
                 <div class="panel-body">
                     {% for sub_category in latest_subcatagories %}
                         <p><a href='/catalog/{{ sub_category.Category.name }}/{{ sub_category.Category.id }}/{{ sub_category.Category_items.name }}/{{ sub_category.Category_items.id }}/'>
-                        {{ sub_category.Category_items.name }}</a> <i class='sub-text'>({{ sub_category.Category.name }})</i> </p>
+                        {{ sub_category.Category_items.name }}</a> <i class='sub-text'>({{ sub_category.Category.name }})</i></p>
+
                     {% endfor %}
                 </div>
             </div>

@@ -12,7 +12,7 @@ a{
 }
 
 .navbar-text a {
-    color: floralwhite;
+    color: antiquewhite;
 }
 .header {
     background-color:cadetblue;
@@ -21,7 +21,7 @@ a{
 
 .panel-body {
     color: darkorange;
-    
+
 }
 .sub-text {
     color: gray;
@@ -53,17 +53,19 @@ a{
 
 .login {
     margin-top: 20;
-    
+    color: antiquewhite;
+
 }
 
 .logout {
     margin-top: 10;
-    
+    color: antiquewhite;
+
 }
 .navbar-link  {
     color: blue;
 }
 .profile-name {
+    margin: 20;
 
-    
 }
