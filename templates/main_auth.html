@@ -10,8 +10,8 @@
     <body>
         <nav class="navbar navbar-default header">
             <div class="container">
-                <h1 class="navbar-text"><a href='/'>Catalog App</a></h1>
-                <img class="profile-photo" src={{ login_session["picture"] }}>
+                <h1 class="navbar-text"><a href='/home'>Catalog App</a></h1>
+                <img class="profile-photo" src={{ login_session["picture"] }}?sz=70>
                 <div class="navbar-header">
                     <h3 class="profile-name">{{ login_session['username'] }}</h3>
                     <h4 class="logout"><a class="navbar-link" href="/disconnect">Logout</a></h4>
@@ -22,5 +22,5 @@
         {% block content %}
 
         {% endblock %}
-    </body>    
+    </body>
 </html>
